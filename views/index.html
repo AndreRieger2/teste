@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload File to Google Drive</title>
+</head>
+<body>
+  <h1>Upload File to Google Drive</h1>
+  <form action="http://localhost:3000/upload" method="post" enctype="multipart/form-data">
+    <input type="text" name="nome" id="nome">
+    <label for="nome">Nome</label>
+    <br>
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+  </form>
+</body>
+</html>
