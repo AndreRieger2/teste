@@ -1,55 +1,64 @@
 import express from 'express';
 import multer from 'multer';
 import { google } from 'googleapis';
-import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Configuração do multer para lidar com uploads de arquivos
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-const CLIENT_ID = '399666542910-6pfgqmahn9iu949bk8l94istppur9g9n.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
-const REDIRECT_URI = 'http://localhost:3000/oauth2callback';
-const REFRESH_TOKEN = '1//0hnCVS7QAZTtvCgYIARAAGBESNwF-L9Ir7xBzgFAmwL8sH3qkcCAx8RLkfFN65JXfdqoTWSmj4w7aHzthLmzIe8Nt4y8sT-YPkW4';
-const FOLDER_ID = '1xFTYZYqlnF7MyUtgivzjxHPnoJNW9m0k'; // Substitua pelo ID da pasta de destino
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const FOLDER_ID = process.env.FOLDER_ID;
 
-const oauth2Client = new google.auth.OAuth2(
-  CLIENT_ID,
-  CLIENT_SECRET,
-  REDIRECT_URI
-);
-
+const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
 const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+app.use(express.static(path.join(__dirname, 'views')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
 
 app.post('/upload', upload.single('file'), async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).send('No file uploaded');
+    }
+
     const fileMetadata = {
       name: req.file.originalname,
-      parents: [FOLDER_ID], // Define a pasta de destino
+      parents: [FOLDER_ID],
     };
     const media = {
       mimeType: req.file.mimetype,
-      body: fs.createReadStream(req.file.path),
+      body: Buffer.from(req.file.buffer),
     };
+
     const file = await drive.files.create({
       resource: fileMetadata,
       media: media,
       fields: 'id',
     });
     res.status(200).send(`File uploaded successfully! File ID: ${file.data.id}`);
-    // Remove o arquivo temporário após o upload
-    fs.unlinkSync(req.file.path);
   } catch (error) {
     console.error('Error uploading file:', error);
     res.status(500).send('Error uploading file');
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
