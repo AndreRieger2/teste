@@ -2,16 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Upload File to Google Drive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload File</title>
 </head>
 <body>
-  <h1>Upload File to Google Drive</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="text" name="nome" id="nome">
-    <label for="nome">Nome</label>
-    <br>
-    <input type="file" name="file" />
+  <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
+    <input type="file" id="fileInput" name="file" required>
     <button type="submit">Upload</button>
   </form>
+  <div id="result"></div>
 </body>
 </html>
