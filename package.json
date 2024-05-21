@@ -2,9 +2,9 @@
   "name": "seu-projeto",
   "version": "1.0.0",
   "description": "Projeto de upload de arquivos para Google Drive",
-  "main": "servidor.js",
+  "main": "servidor.cjs",
   "scripts": {
-    "start": "node servidor.js"
+    "start": "node servidor.cjs"
   },
   "dependencies": {
   "express": "^4.17.1",
