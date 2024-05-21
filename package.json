@@ -7,10 +7,10 @@
     "start": "node servidor.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "multer": "^1.4.2",
-    "googleapis": "^39.2.0",
-    "dotenv": "^8.2.0"
+  "express": "^4.17.1",
+  "googleapis": "^100.0.0", // Atualize para a versão mais recente
+  "multer": "^1.4.4"
+  "dotenv": "^8.2.0"
   },
   "type": "module"
 }
