@@ -4,6 +4,7 @@ import { google } from 'googleapis';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+const FormData = require('form-data');
 
 dotenv.config();
 
@@ -34,28 +35,31 @@ app.get('/', (req, res) => {
 
 app.post('/upload', upload.single('file'), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).send('No file uploaded');
-    }
-
     const fileMetadata = {
       name: req.file.originalname,
       parents: [FOLDER_ID],
     };
-    const media = {
-      mimeType: req.file.mimetype,
-      body: Buffer.from(req.file.buffer),
-    };
 
-    const file = await drive.files.create({
-      resource: fileMetadata,
-      media: media,
+    const form = new FormData();
+    form.append('file', fs.createReadStream(req.file.path), {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype,
+    });
+
+    const response = await drive.files.create({
+      requestBody: fileMetadata,
+      media: {
+        mimeType: 'application/octet-stream',
+        body: form,
+      },
       fields: 'id',
     });
-    res.status(200).send(`File uploaded successfully! File ID: ${file.data.id}`);
+
+    res.status(200).send(`Arquivo enviado com sucesso! ID do arquivo: ${response.data.id}`);
+    fs.unlinkSync(req.file.path);
   } catch (error) {
-    console.error('Error uploading file:', error);
-    res.status(500).send('Error uploading file');
+    console.error('Erro ao enviar arquivo:', error);
+    res.status(500).send('Erro ao enviar arquivo');
   }
 });
 
