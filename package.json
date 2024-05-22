@@ -1,0 +1,16 @@
+{
+  "name": "seu-projeto",
+  "version": "1.0.0",
+  "description": "Projeto de upload de arquivos para Google Drive",
+  "main": "servidor.js",
+  "scripts": {
+    "start": "node servidor.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "googleapis": "^100.0.0",
+    "dotenv": "^8.2.0"
+  },
+  "type": "module"
+}
