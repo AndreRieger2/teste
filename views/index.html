@@ -4,7 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form ECD CNCTDS</title>
-    <link rel="stylesheet" href="../styles/styles.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+        :root{
+            --cor-de-fundo: #12121c;
+            --cor-do-fomr: #ffffff;
+            --cor-da-fonte: #000000;
+            --cor-do-input: #e3e3e3;
+        }
+        * {
+        margin: 0;
+        padding: 0;
+        font-size: 1.5vw;
+        }
+        .html{
+            font-size: 8px;
+        }
+        
+        body {
+            height: 100vw;
+            background-image: linear-gradient(to bottom,var(--cor-de-fundo), #010138);
+            color: var(--cor-da-fonte);
+            font-family: Montserrat;
+            font: 400;
+        }
+        .caixa {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+        }
+        .logoCnctds{
+            width: 20%;
+            height: auto;
+        }
+        .Box {
+            background-color: var(--cor-do-fomr);
+            border-radius: 1rem;
+            padding: 1rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .inputBox{
+            position: relative;
+            font-family: Arial;
+            font: 400;
+        }
+        .inputUser{
+            background: none;
+            border: none;
+            border-bottom: 1px solid var(--cor-da-fonte);
+            outline: none;
+            font-size: 1.25rem;
+            color: var(--cor-da-fonte);
+            width: 100%;
+        }
+        .inputLabel{
+            top: 0px;
+            left: 0px;
+            pointer-events: none;
+            transition: .5s;
+        }
+        .inputUser:focus ~ .inputLabel,
+        .inputUser:valid ~ .inputLabel{
+            font-size: 1.5rem;
+        }
+        
+        .inputData{
+            position: absolute;
+            top: 0.75rem;
+            left: 0px;
+        }
+        .data{
+            padding-top: 2rem;
+            font-size: 1rem;
+            font-family: Arial;
+            font: 400;
+        }
+        .submit{
+            background-image: linear-gradient(to right,var(--cor-de-fundo), #181824);
+                width: 100%;
+                border: none;
+                padding: 1rem;
+                color: white;
+                font-size: 1rem;
+                cursor: pointer;
+                border-radius: 10px;
+        }
+        
+        @media(max-width: 500px){
+            .html{
+                height: auto;
+            }
+            .box{
+                width: 100%;
+            }
+        }
+        </style>
 </head>
 <body>
     <div class="caixa">
