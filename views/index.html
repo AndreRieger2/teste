@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="PT-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form ECD CNCTDS</title>
+    <link rel="stylesheet" href="./styles/styles.css">
+</head>
+<body>
+    <div class="caixa">
+        <img class="logoCnctds" src="./imagens/cnctds.png">
+        <form action="/upload"
+              method="post"
+              enctype="multipart/form-data"
+              name="Inscrições ECD24">
+            <div class="Box">
+                <legend><b>Formulário de inscrição ECD CNCTDS</b></legend>
+                <div class="inputBox">
+                    <label for="nome" class="inputLabel">Nome completo</label>
+                    <input type="text" name="Nome" id="nome" class="inputUser" required>
+                </div>
+                <div class="inputBox">
+                    <label for="email" class="inputLabel">Email</label>
+                    <input type="email" name="Email" id="email" class="inputUser" required>
+                </div>
+                <div class="inputBox">
+                    <label for="numero" class="inputLabel">Celular</label>
+                    <input type="tel" name="Telefone" id="numero" class="inputUser" maxlength="15" placeholder="(XX) 9XXXX-XXXX" required>
+                </div>
+                <div class="inputBox">
+                    <input type="date" name="Data" id="data" class="inputUser data" required>
+                    <label for="data" class="inputData">Data de nascimento</label>
+                </div>
+                <div class="inputBox sexo">
+                    <p>Sexo</p>
+                    <input type="radio" name="Sexo" id="Masculino" value="Masculino" required>
+                    <label for="Masculino">Masculino</label>
+                    <br>
+                    <input type="radio" name="Sexo" id="Feminino" value="Feminino" required>
+                    <label for="Feminino">Feminino</label>
+                </div>
+                <div class="inputBox">
+                    <label for="lider" class="inputLabel">Nome do seu líder</label>
+                    <input type="text" name="Lider" id="lider" class="inputUser" required>
+                </div>
+                <div class="inputBox">
+                    <label for="cidade" class="inputLabel">Cidade</label>
+                    <input type="text" name="Cidade" id="cidade" class="inputUser" required>
+                </div>
+                <div class="inputBox">
+                    <label for="fileInput" class="inputLabel">Upload do Arquivo</label>
+                    <input type="file" name="file" id="fileInput" required>
+                </div>
+                <div>
+                    <button type="submit" name="submit" class="submit">Enviar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
