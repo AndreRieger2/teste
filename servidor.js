@@ -4,24 +4,25 @@ import { google } from 'googleapis';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Readable } from 'stream';
+import { readFile } from 'fs/promises'; // Importe esta linha se não estiver usando Node.js 14 ou superior
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
- 
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const SHEET_ID = process.env.SHEET_ID;  // ID da planilha do Google Sheets
-const FOLDER_ID = process.env.FOLDER_ID;
+// Carregar as credenciais do token de serviço
+const credentials = await readFile('/cnctds.json');
+const { client_email, private_key } = JSON.parse(credentials);
 
-// Configure a autenticação usando variáveis de ambiente
 const auth = new google.auth.GoogleAuth({
   credentials: {
-    client_email: process.env.CLIENT_EMAIL,
-    private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+    client_email,
+    private_key,
   },
   scopes: ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets'],
 });
@@ -58,7 +59,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
         const fileMetadata = {
             name: nomeCompleto,
-            parents: [process.env.FOLDER_ID],
+            parents: [FOLDER_ID],
         };
         const media = {
             mimeType: req.file.mimetype,
@@ -71,7 +72,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
             fields: 'id',
         });
 
-        const sheetData = [
+          const sheetData = [
             formData.Nome,
             formData.Email,
             formData.Telefone,
@@ -83,12 +84,13 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
         console.log('Sheet data to append:', sheetData);
 
-        console.log('SHEET_ID:', process.env.SHEET_ID);
+        // Debug: Verificando os valores de SHEET_ID e range
+        console.log('SHEET_ID:', SHEET_ID);
         console.log('Range: Inscrições!A1');
 
         await sheets.spreadsheets.values.append({
-            spreadsheetId: process.env.SHEET_ID,
-            range: 'Inscrições!A1',
+            spreadsheetId: SHEET_ID,
+            range: 'Inscrições!A1', // Ajuste para o intervalo adequado
             valueInputOption: 'USER_ENTERED',
             resource: {
                 values: [sheetData],
