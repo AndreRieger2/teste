@@ -14,6 +14,9 @@ const PORT = process.env.PORT || 3000;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+const SHEET_ID = process.env.SHEET_ID;  // ID da planilha do Google Sheets
+const FOLDER_ID = process.env.FOLDER_ID;
+
 // Configure a autenticação usando variáveis de ambiente
 const auth = new google.auth.GoogleAuth({
   credentials: {
