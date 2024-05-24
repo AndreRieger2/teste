@@ -17,7 +17,7 @@ const upload = multer({ storage: storage });
 // Configure a autenticação usando variáveis de ambiente
 const auth = new google.auth.GoogleAuth({
   credentials: {
-    client_email: process.env.CLIENT_EMAIL,
+    client_email: process.env.CLIENT_EMAIL, 
     private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
   },
   scopes: ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets'],
