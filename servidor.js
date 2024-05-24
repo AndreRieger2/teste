@@ -5,12 +5,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { Readable } from 'stream';
 
-// Carregar dotenv apenas em desenvolvimento
-if (process.env.NODE_ENV !== 'production') {
-    const dotenv = await import('dotenv');
-    dotenv.config();
-}
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -20,17 +14,17 @@ const PORT = process.env.PORT || 3000;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = process.env.REDIRECT_URI;
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
-const SHEET_ID = process.env.SHEET_ID;  // ID da planilha do Google Sheets
-const FOLDER_ID = process.env.FOLDER_ID;
+// Configure a autenticação usando variáveis de ambiente
+const auth = new google.auth.GoogleAuth({
+  credentials: {
+    client_email: process.env.CLIENT_EMAIL,
+    private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+  },
+  scopes: ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets'],
+});
 
-const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-const drive = google.drive({ version: 'v3', auth: oauth2Client });
-const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
+const drive = google.drive({ version: 'v3', auth });
+const sheets = google.sheets({ version: 'v4', auth });
 
 app.use(express.static(path.join(__dirname, 'views')));
 app.use(express.urlencoded({ extended: true }));
@@ -61,7 +55,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
         const fileMetadata = {
             name: nomeCompleto,
-            parents: [FOLDER_ID],
+            parents: [process.env.FOLDER_ID],
         };
         const media = {
             mimeType: req.file.mimetype,
@@ -74,7 +68,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
             fields: 'id',
         });
 
-          const sheetData = [
+        const sheetData = [
             formData.Nome,
             formData.Email,
             formData.Telefone,
@@ -82,18 +76,16 @@ app.post('/upload', upload.single('file'), async (req, res) => {
             formData.Sexo,
             formData.Lider,
             formData.Cidade,
-            file.data.id
         ];
 
         console.log('Sheet data to append:', sheetData);
 
-        // Debug: Verificando os valores de SHEET_ID e range
-        console.log('SHEET_ID:', SHEET_ID);
+        console.log('SHEET_ID:', process.env.SHEET_ID);
         console.log('Range: Inscrições!A1');
 
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SHEET_ID,
-            range: 'Inscrições!A1', // Ajuste para o intervalo adequado
+            spreadsheetId: process.env.SHEET_ID,
+            range: 'Inscrições!A1',
             valueInputOption: 'USER_ENTERED',
             resource: {
                 values: [sheetData],
@@ -106,7 +98,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         if (error.response && error.response.data) {
             console.error('Google API error details:', error.response.data);
         }
-        res.status(500).send('Error uploading file');
+        res.status(999).send('Error uploading file');
     }
 });
 
